@@ -16,6 +16,10 @@ Pricing Functions:
         Monte Carlo simulation under geometric Brownian motion.
         Returns (price, standard_error) for European options.
 
+Calibration:
+    implied_volatility(option, market_price) -> float
+        Compute implied volatility from market price using Brent's method.
+
 Greeks (Black-Scholes only):
     delta(option) -> float  # dPrice/dSpot
     gamma(option) -> float  # d²Price/dSpot²
@@ -44,12 +48,15 @@ Example:
 from .black_scholes import price, delta, gamma, vega, theta, rho
 from .binomial_tree import price_binomial
 from .monte_carlo import price_monte_carlo
+from .implied_volatility import implied_volatility
 
 __all__ = [
     # Pricing functions
     "price",
     "price_binomial",
     "price_monte_carlo",
+    # Calibration
+    "implied_volatility",
     # Greeks
     "delta",
     "gamma",
