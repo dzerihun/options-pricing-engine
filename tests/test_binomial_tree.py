@@ -10,9 +10,9 @@ Tests include:
 import math
 import pytest
 
-from src.core.option_types import Option, OptionType, ExerciseStyle
-from src.models import black_scholes
-from src.models.binomial_tree import price_binomial
+from options_pricing_engine.core.option_types import Option, OptionType, ExerciseStyle
+from options_pricing_engine.models import black_scholes
+from options_pricing_engine.models.binomial_tree import price_binomial
 
 
 class TestBinomialConvergence:

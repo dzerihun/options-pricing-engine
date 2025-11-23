@@ -62,7 +62,7 @@ def portfolio_price(portfolio: Portfolio) -> float:
         The total portfolio value
 
     Example:
-        >>> from src.core.option_types import Option, OptionType, ExerciseStyle
+        >>> from options_pricing_engine.core.option_types import Option, OptionType, ExerciseStyle
         >>> call = Option(100, 100, 0.05, 0.20, 1.0, OptionType.CALL, ExerciseStyle.EUROPEAN)
         >>> portfolio = Portfolio([Position(call, 10)])
         >>> price = portfolio_price(portfolio)
@@ -89,7 +89,7 @@ def portfolio_greeks(portfolio: Portfolio) -> Dict[str, float]:
         Dictionary with keys: 'delta', 'gamma', 'vega', 'theta', 'rho'
 
     Example:
-        >>> from src.core.option_types import Option, OptionType, ExerciseStyle
+        >>> from options_pricing_engine.core.option_types import Option, OptionType, ExerciseStyle
         >>> call = Option(100, 100, 0.05, 0.20, 1.0, OptionType.CALL, ExerciseStyle.EUROPEAN)
         >>> portfolio = Portfolio([Position(call, 10)])
         >>> greeks = portfolio_greeks(portfolio)
@@ -147,7 +147,7 @@ def scenario_pnl(
             - 'pnl': The P&L relative to base price
 
     Example:
-        >>> from src.core.option_types import Option, OptionType, ExerciseStyle
+        >>> from options_pricing_engine.core.option_types import Option, OptionType, ExerciseStyle
         >>> call = Option(100, 100, 0.05, 0.20, 1.0, OptionType.CALL, ExerciseStyle.EUROPEAN)
         >>> portfolio = Portfolio([Position(call, 1)])
         >>> results = scenario_pnl(portfolio, [0], [0])

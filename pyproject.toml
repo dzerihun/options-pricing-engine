@@ -1,0 +1,79 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "options_pricing_engine"
+version = "0.1.0"
+description = "A comprehensive options pricing library with Black-Scholes, binomial tree, and Monte Carlo methods"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Options Pricing Team"}
+]
+keywords = [
+    "options",
+    "pricing",
+    "black-scholes",
+    "binomial-tree",
+    "monte-carlo",
+    "quantitative-finance",
+    "derivatives",
+    "greeks",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+dependencies = [
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+]
+notebooks = [
+    "jupyter>=1.0.0",
+    "matplotlib>=3.7.0",
+    "pandas>=2.0.0",
+]
+all = [
+    "options_pricing_engine[dev,notebooks]",
+]
+
+[project.scripts]
+options-pricer = "options_pricing_engine.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/dzerihun/options-pricing-engine"
+Repository = "https://github.com/dzerihun/options-pricing-engine"
+Issues = "https://github.com/dzerihun/options-pricing-engine/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+addopts = "-v --tb=short"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP"]
+ignore = ["E501"]

@@ -35,7 +35,7 @@ def binomial_convergence(
             - errors: List of absolute errors (binomial - BS) for each step count
 
     Example:
-        >>> from src.core.option_types import Option, OptionType, ExerciseStyle
+        >>> from options_pricing_engine.core.option_types import Option, OptionType, ExerciseStyle
         >>> option = Option(
         ...     spot=100, strike=100, rate=0.05, volatility=0.20,
         ...     time_to_maturity=1.0, option_type=OptionType.CALL,
@@ -82,7 +82,7 @@ def monte_carlo_convergence(
             - std_errors: List of standard errors for each path count
 
     Example:
-        >>> from src.core.option_types import Option, OptionType, ExerciseStyle
+        >>> from options_pricing_engine.core.option_types import Option, OptionType, ExerciseStyle
         >>> option = Option(
         ...     spot=100, strike=100, rate=0.05, volatility=0.20,
         ...     time_to_maturity=1.0, option_type=OptionType.CALL,
