@@ -5,12 +5,11 @@ This module provides functions for computing implied volatility from
 market option prices using root-finding methods.
 """
 
-from typing import Optional
-
 from scipy.optimize import brentq
 
-from ..core.option_types import Option, OptionType, ExerciseStyle
-from .black_scholes import price as bs_price, vega as bs_vega
+from ..core.option_types import ExerciseStyle, Option, OptionType
+from .black_scholes import price as bs_price
+from .black_scholes import vega as bs_vega
 
 
 def implied_volatility(
@@ -70,6 +69,7 @@ def implied_volatility(
     T = option.time_to_maturity
 
     import math
+
     discount = math.exp(-r * T)
 
     if option.option_type == OptionType.CALL:
@@ -114,13 +114,13 @@ def implied_volatility(
             volatility=sigma,
             time_to_maturity=option.time_to_maturity,
             option_type=option.option_type,
-            exercise_style=option.exercise_style
+            exercise_style=option.exercise_style,
         )
         return bs_price(test_option) - market_price
 
     # Search range for implied volatility
     vol_min = 1e-4  # 0.01%
-    vol_max = 5.0   # 500%
+    vol_max = 5.0  # 500%
 
     # Check if solution exists within bounds
     try:
@@ -194,7 +194,7 @@ def implied_volatility_newton(
             volatility=sigma,
             time_to_maturity=option.time_to_maturity,
             option_type=option.option_type,
-            exercise_style=option.exercise_style
+            exercise_style=option.exercise_style,
         )
 
         # Compute price and vega

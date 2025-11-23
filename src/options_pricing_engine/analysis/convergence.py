@@ -6,18 +6,17 @@ binomial tree and Monte Carlo methods toward Black-Scholes prices.
 """
 
 from collections.abc import Sequence
-from typing import Tuple, List
 
 from ..core.option_types import Option
-from ..models.black_scholes import price as bs_price
 from ..models.binomial_tree import price_binomial
+from ..models.black_scholes import price as bs_price
 from ..models.monte_carlo import price_monte_carlo
 
 
 def binomial_convergence(
     option: Option,
     steps_list: Sequence[int],
-) -> Tuple[float, List[float], List[float]]:
+) -> tuple[float, list[float], list[float]]:
     """
     Analyze convergence of binomial tree pricing to Black-Scholes.
 
@@ -63,7 +62,7 @@ def monte_carlo_convergence(
     option: Option,
     paths_list: Sequence[int],
     seed: int = 42,
-) -> Tuple[float, List[float], List[float]]:
+) -> tuple[float, list[float], list[float]]:
     """
     Analyze convergence of Monte Carlo pricing to Black-Scholes.
 
@@ -133,15 +132,15 @@ def compute_convergence_stats(
     _, mc_prices, mc_std_errors = monte_carlo_convergence(option, paths_list, seed)
 
     return {
-        'bs_price': bs,
-        'binomial': {
-            'steps': list(steps_list),
-            'prices': bin_prices,
-            'errors': bin_errors,
+        "bs_price": bs,
+        "binomial": {
+            "steps": list(steps_list),
+            "prices": bin_prices,
+            "errors": bin_errors,
         },
-        'monte_carlo': {
-            'paths': list(paths_list),
-            'prices': mc_prices,
-            'std_errors': mc_std_errors,
-        }
+        "monte_carlo": {
+            "paths": list(paths_list),
+            "prices": mc_prices,
+            "std_errors": mc_std_errors,
+        },
     }

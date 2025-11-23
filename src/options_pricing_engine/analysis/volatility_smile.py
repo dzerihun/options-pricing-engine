@@ -6,11 +6,10 @@ and recovering implied volatilities to study volatility surfaces.
 """
 
 from collections.abc import Sequence
-from typing import Tuple, List
 
 import numpy as np
 
-from ..core.option_types import Option, OptionType, ExerciseStyle
+from ..core.option_types import ExerciseStyle, Option, OptionType
 from ..models.black_scholes import price as bs_price
 from ..models.implied_volatility import implied_volatility
 
@@ -21,7 +20,7 @@ def generate_synthetic_call_prices(
     time_to_maturity: float,
     strikes: Sequence[float],
     true_vol: float,
-) -> List[float]:
+) -> list[float]:
     """
     Generate synthetic European call prices using Black-Scholes.
 
@@ -54,7 +53,7 @@ def generate_synthetic_call_prices(
             volatility=true_vol,
             time_to_maturity=time_to_maturity,
             option_type=OptionType.CALL,
-            exercise_style=ExerciseStyle.EUROPEAN
+            exercise_style=ExerciseStyle.EUROPEAN,
         )
         prices.append(bs_price(option))
 
@@ -67,7 +66,7 @@ def recover_implied_vols_for_strikes(
     time_to_maturity: float,
     strikes: Sequence[float],
     prices: Sequence[float],
-) -> List[float]:
+) -> list[float]:
     """
     Recover implied volatilities from option prices for multiple strikes.
 
@@ -97,8 +96,7 @@ def recover_implied_vols_for_strikes(
     """
     if len(strikes) != len(prices):
         raise ValueError(
-            f"strikes and prices must have same length, "
-            f"got {len(strikes)} and {len(prices)}"
+            f"strikes and prices must have same length, got {len(strikes)} and {len(prices)}"
         )
 
     implied_vols = []
@@ -111,7 +109,7 @@ def recover_implied_vols_for_strikes(
             volatility=0.20,  # Initial guess, will be overwritten
             time_to_maturity=time_to_maturity,
             option_type=OptionType.CALL,
-            exercise_style=ExerciseStyle.EUROPEAN
+            exercise_style=ExerciseStyle.EUROPEAN,
         )
         iv = implied_volatility(option, price)
         implied_vols.append(iv)
@@ -128,7 +126,7 @@ def generate_vol_smile_data(
     apply_noise: bool = False,
     noise_std: float = 0.05,
     seed: int | None = None,
-) -> Tuple[List[float], List[float]]:
+) -> tuple[list[float], list[float]]:
     """
     Generate volatility smile data by creating prices and recovering IVs.
 
@@ -161,9 +159,7 @@ def generate_vol_smile_data(
         True
     """
     # Generate clean prices
-    prices = generate_synthetic_call_prices(
-        spot, rate, time_to_maturity, strikes, true_vol
-    )
+    prices = generate_synthetic_call_prices(spot, rate, time_to_maturity, strikes, true_vol)
 
     # Optionally add noise
     if apply_noise:
@@ -177,9 +173,7 @@ def generate_vol_smile_data(
         prices = noisy_prices
 
     # Recover implied volatilities
-    implied_vols = recover_implied_vols_for_strikes(
-        spot, rate, time_to_maturity, strikes, prices
-    )
+    implied_vols = recover_implied_vols_for_strikes(spot, rate, time_to_maturity, strikes, prices)
 
     return list(strikes), implied_vols
 
@@ -190,7 +184,7 @@ def generate_term_structure_data(
     rate: float,
     maturities: Sequence[float],
     true_vols: Sequence[float],
-) -> Tuple[List[float], List[float]]:
+) -> tuple[list[float], list[float]]:
     """
     Generate volatility term structure data.
 
@@ -229,7 +223,7 @@ def generate_term_structure_data(
             volatility=vol,
             time_to_maturity=T,
             option_type=OptionType.CALL,
-            exercise_style=ExerciseStyle.EUROPEAN
+            exercise_style=ExerciseStyle.EUROPEAN,
         )
         price = bs_price(option)
 

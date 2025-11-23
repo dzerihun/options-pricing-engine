@@ -10,8 +10,8 @@ Usage:
 import argparse
 import sys
 
-from .core.option_types import Option, OptionType, ExerciseStyle
-from .models import price, price_binomial, price_monte_carlo, delta, gamma, vega, theta, rho
+from .core.option_types import ExerciseStyle, Option, OptionType
+from .models import delta, gamma, price, price_binomial, price_monte_carlo, rho, theta, vega
 
 
 def create_parser() -> argparse.ArgumentParser:
@@ -36,7 +36,9 @@ Examples:
     # Required option parameters
     parser.add_argument("--spot", type=float, required=True, help="Current spot price")
     parser.add_argument("--strike", type=float, required=True, help="Strike price")
-    parser.add_argument("--rate", type=float, required=True, help="Risk-free interest rate (e.g., 0.05 for 5%%)")
+    parser.add_argument(
+        "--rate", type=float, required=True, help="Risk-free interest rate (e.g., 0.05 for 5%%)"
+    )
     parser.add_argument("--vol", type=float, required=True, help="Volatility (e.g., 0.2 for 20%%)")
     parser.add_argument("--time", type=float, required=True, help="Time to maturity in years")
     parser.add_argument(

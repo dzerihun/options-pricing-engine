@@ -6,14 +6,13 @@ their Greeks using the Black-Scholes closed-form solution.
 """
 
 import math
-from typing import Tuple
 
 from scipy.stats import norm
 
-from ..core.option_types import Option, OptionType, ExerciseStyle
+from ..core.option_types import ExerciseStyle, Option, OptionType
 
 
-def _compute_d1_d2(option: Option) -> Tuple[float, float]:
+def _compute_d1_d2(option: Option) -> tuple[float, float]:
     """
     Compute the d1 and d2 parameters used in Black-Scholes formulas.
 
@@ -34,7 +33,7 @@ def _compute_d1_d2(option: Option) -> Tuple[float, float]:
     T = option.time_to_maturity
 
     sqrt_T = math.sqrt(T)
-    d1 = (math.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * sqrt_T)
+    d1 = (math.log(S / K) + (r + 0.5 * sigma**2) * T) / (sigma * sqrt_T)
     d2 = d1 - sigma * sqrt_T
 
     return d1, d2
@@ -52,8 +51,7 @@ def _validate_european(option: Option) -> None:
     """
     if option.exercise_style != ExerciseStyle.EUROPEAN:
         raise ValueError(
-            f"Black-Scholes model only supports European options, "
-            f"got {option.exercise_style.value}"
+            f"Black-Scholes model only supports European options, got {option.exercise_style.value}"
         )
 
 

@@ -6,12 +6,14 @@ from enum import Enum
 
 class OptionType(Enum):
     """Type of option - call or put."""
+
     CALL = "call"
     PUT = "put"
 
 
 class ExerciseStyle(Enum):
     """Exercise style of the option."""
+
     EUROPEAN = "european"
     AMERICAN = "american"
 
@@ -30,6 +32,7 @@ class Option:
         option_type: Type of option (CALL or PUT)
         exercise_style: Exercise style (EUROPEAN or AMERICAN)
     """
+
     spot: float
     strike: float
     rate: float
