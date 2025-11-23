@@ -49,12 +49,16 @@ from .black_scholes import price, delta, gamma, vega, theta, rho
 from .binomial_tree import price_binomial
 from .monte_carlo import price_monte_carlo
 from .implied_volatility import implied_volatility
+from .digital import price_digital_black_scholes, price_digital_monte_carlo
 
 __all__ = [
     # Pricing functions
     "price",
     "price_binomial",
     "price_monte_carlo",
+    # Exotics
+    "price_digital_black_scholes",
+    "price_digital_monte_carlo",
     # Calibration
     "implied_volatility",
     # Greeks
