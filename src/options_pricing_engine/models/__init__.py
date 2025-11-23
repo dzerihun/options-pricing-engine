@@ -28,8 +28,8 @@ Greeks (Black-Scholes only):
     rho(option) -> float    # dPrice/dRate
 
 Example:
-    >>> from src.core.option_types import Option, OptionType, ExerciseStyle
-    >>> from src.models import price, price_binomial, price_monte_carlo
+    >>> from options_pricing_engine.core.option_types import Option, OptionType, ExerciseStyle
+    >>> from options_pricing_engine.models import price, price_binomial, price_monte_carlo
     >>>
     >>> option = Option(
     ...     spot=100.0, strike=100.0, rate=0.05, volatility=0.20,
@@ -45,11 +45,11 @@ Example:
     (10.45..., 0.03...)
 """
 
-from .black_scholes import price, delta, gamma, vega, theta, rho
 from .binomial_tree import price_binomial
-from .monte_carlo import price_monte_carlo
-from .implied_volatility import implied_volatility
+from .black_scholes import delta, gamma, price, rho, theta, vega
 from .digital import price_digital_black_scholes, price_digital_monte_carlo
+from .implied_volatility import implied_volatility
+from .monte_carlo import price_monte_carlo
 
 __all__ = [
     # Pricing functions

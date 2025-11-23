@@ -6,11 +6,10 @@ Monte Carlo simulation under geometric Brownian motion.
 """
 
 import math
-from typing import Tuple
 
 import numpy as np
 
-from ..core.option_types import Option, OptionType, ExerciseStyle
+from ..core.option_types import ExerciseStyle, Option, OptionType
 
 
 def price_monte_carlo(
@@ -18,7 +17,7 @@ def price_monte_carlo(
     num_paths: int = 100_000,
     antithetic: bool = True,
     seed: int | None = None,
-) -> Tuple[float, float]:
+) -> tuple[float, float]:
     """
     Price a European option using Monte Carlo under geometric Brownian motion.
 
@@ -45,8 +44,7 @@ def price_monte_carlo(
     # Validate inputs
     if option.exercise_style != ExerciseStyle.EUROPEAN:
         raise ValueError(
-            f"Monte Carlo pricing only supports European options, "
-            f"got {option.exercise_style.value}"
+            f"Monte Carlo pricing only supports European options, got {option.exercise_style.value}"
         )
 
     if num_paths <= 0:
@@ -71,7 +69,7 @@ def price_monte_carlo(
         Z = rng.standard_normal(num_samples)
 
         # Compute terminal prices for both Z and -Z
-        drift = (r - 0.5 * sigma ** 2) * T
+        drift = (r - 0.5 * sigma**2) * T
         diffusion = sigma * math.sqrt(T)
 
         S_T_pos = S * np.exp(drift + diffusion * Z)
@@ -94,7 +92,7 @@ def price_monte_carlo(
         Z = rng.standard_normal(num_paths)
 
         # Compute terminal prices
-        drift = (r - 0.5 * sigma ** 2) * T
+        drift = (r - 0.5 * sigma**2) * T
         diffusion = sigma * math.sqrt(T)
         S_T = S * np.exp(drift + diffusion * Z)
 
@@ -151,7 +149,7 @@ def price_monte_carlo_with_greeks(
         volatility=option.volatility,
         time_to_maturity=option.time_to_maturity,
         option_type=option.option_type,
-        exercise_style=option.exercise_style
+        exercise_style=option.exercise_style,
     )
 
     option_down = Option(
@@ -161,18 +159,18 @@ def price_monte_carlo_with_greeks(
         volatility=option.volatility,
         time_to_maturity=option.time_to_maturity,
         option_type=option.option_type,
-        exercise_style=option.exercise_style
+        exercise_style=option.exercise_style,
     )
 
     price_up, _ = price_monte_carlo(option_up, num_paths, antithetic=True, seed=seed)
     price_down, _ = price_monte_carlo(option_down, num_paths, antithetic=True, seed=seed)
 
     delta = (price_up - price_down) / (2 * dS)
-    gamma = (price_up - 2 * price + price_down) / (dS ** 2)
+    gamma = (price_up - 2 * price + price_down) / (dS**2)
 
     return {
-        'price': price,
-        'std_error': std_error,
-        'delta': delta,
-        'gamma': gamma,
+        "price": price,
+        "std_error": std_error,
+        "delta": delta,
+        "gamma": gamma,
     }

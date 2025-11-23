@@ -6,12 +6,11 @@ using both closed-form Black-Scholes formulas and Monte Carlo simulation.
 """
 
 import math
-from typing import Tuple
 
 import numpy as np
 from scipy.stats import norm
 
-from ..core.option_types import Option, OptionType, ExerciseStyle
+from ..core.option_types import ExerciseStyle, Option, OptionType
 
 
 def _compute_d2(option: Option) -> float:
@@ -27,7 +26,7 @@ def _compute_d2(option: Option) -> float:
     T = option.time_to_maturity
 
     sqrt_T = math.sqrt(T)
-    d2 = (math.log(S / K) + (r - 0.5 * sigma ** 2) * T) / (sigma * sqrt_T)
+    d2 = (math.log(S / K) + (r - 0.5 * sigma**2) * T) / (sigma * sqrt_T)
 
     return d2
 
@@ -94,7 +93,7 @@ def price_digital_monte_carlo(
     payout: float = 1.0,
     num_paths: int = 100_000,
     seed: int | None = None,
-) -> Tuple[float, float]:
+) -> tuple[float, float]:
     """
     Price a cash-or-nothing digital option using Monte Carlo simulation.
 
@@ -147,7 +146,7 @@ def price_digital_monte_carlo(
 
     # Simulate terminal prices using GBM
     Z = rng.standard_normal(num_paths)
-    drift = (r - 0.5 * sigma ** 2) * T
+    drift = (r - 0.5 * sigma**2) * T
     diffusion = sigma * math.sqrt(T)
     S_T = S * np.exp(drift + diffusion * Z)
 
@@ -188,7 +187,6 @@ def digital_delta(option: Option, payout: float = 1.0) -> float:
         raise ValueError("Only European options supported")
 
     S = option.spot
-    K = option.strike
     r = option.rate
     sigma = option.volatility
     T = option.time_to_maturity

@@ -6,18 +6,26 @@ of options and computing aggregate risk metrics.
 """
 
 from dataclasses import dataclass
-from typing import List, Dict
-import copy
 
-from .option_types import Option, OptionType, ExerciseStyle
+from ..models.black_scholes import (
+    delta as bs_delta,
+)
+from ..models.black_scholes import (
+    gamma as bs_gamma,
+)
 from ..models.black_scholes import (
     price as bs_price,
-    delta as bs_delta,
-    gamma as bs_gamma,
-    vega as bs_vega,
-    theta as bs_theta,
+)
+from ..models.black_scholes import (
     rho as bs_rho,
 )
+from ..models.black_scholes import (
+    theta as bs_theta,
+)
+from ..models.black_scholes import (
+    vega as bs_vega,
+)
+from .option_types import ExerciseStyle, Option, OptionType
 
 
 @dataclass
@@ -29,6 +37,7 @@ class Position:
         option: The option contract
         quantity: Number of contracts (positive for long, negative for short)
     """
+
     option: Option
     quantity: float
 
@@ -41,7 +50,8 @@ class Portfolio:
     Attributes:
         positions: List of Position objects
     """
-    positions: List[Position]
+
+    positions: list[Position]
 
     def __post_init__(self):
         """Validate portfolio."""
@@ -62,7 +72,7 @@ def portfolio_price(portfolio: Portfolio) -> float:
         The total portfolio value
 
     Example:
-        >>> from src.core.option_types import Option, OptionType, ExerciseStyle
+        >>> from options_pricing_engine.core.option_types import Option, OptionType, ExerciseStyle
         >>> call = Option(100, 100, 0.05, 0.20, 1.0, OptionType.CALL, ExerciseStyle.EUROPEAN)
         >>> portfolio = Portfolio([Position(call, 10)])
         >>> price = portfolio_price(portfolio)
@@ -76,7 +86,7 @@ def portfolio_price(portfolio: Portfolio) -> float:
     return total
 
 
-def portfolio_greeks(portfolio: Portfolio) -> Dict[str, float]:
+def portfolio_greeks(portfolio: Portfolio) -> dict[str, float]:
     """
     Compute the aggregate Greeks for a portfolio.
 
@@ -89,7 +99,7 @@ def portfolio_greeks(portfolio: Portfolio) -> Dict[str, float]:
         Dictionary with keys: 'delta', 'gamma', 'vega', 'theta', 'rho'
 
     Example:
-        >>> from src.core.option_types import Option, OptionType, ExerciseStyle
+        >>> from options_pricing_engine.core.option_types import Option, OptionType, ExerciseStyle
         >>> call = Option(100, 100, 0.05, 0.20, 1.0, OptionType.CALL, ExerciseStyle.EUROPEAN)
         >>> portfolio = Portfolio([Position(call, 10)])
         >>> greeks = portfolio_greeks(portfolio)
@@ -113,19 +123,19 @@ def portfolio_greeks(portfolio: Portfolio) -> Dict[str, float]:
         total_rho += qty * bs_rho(opt)
 
     return {
-        'delta': total_delta,
-        'gamma': total_gamma,
-        'vega': total_vega,
-        'theta': total_theta,
-        'rho': total_rho,
+        "delta": total_delta,
+        "gamma": total_gamma,
+        "vega": total_vega,
+        "theta": total_theta,
+        "rho": total_rho,
     }
 
 
 def scenario_pnl(
     portfolio: Portfolio,
-    spot_shocks: List[float],
-    vol_shocks: List[float],
-) -> List[Dict[str, float]]:
+    spot_shocks: list[float],
+    vol_shocks: list[float],
+) -> list[dict[str, float]]:
     """
     Compute portfolio P&L across a grid of spot and volatility shocks.
 
@@ -147,7 +157,7 @@ def scenario_pnl(
             - 'pnl': The P&L relative to base price
 
     Example:
-        >>> from src.core.option_types import Option, OptionType, ExerciseStyle
+        >>> from options_pricing_engine.core.option_types import Option, OptionType, ExerciseStyle
         >>> call = Option(100, 100, 0.05, 0.20, 1.0, OptionType.CALL, ExerciseStyle.EUROPEAN)
         >>> portfolio = Portfolio([Position(call, 1)])
         >>> results = scenario_pnl(portfolio, [0], [0])
@@ -196,14 +206,16 @@ def scenario_pnl(
             # Calculate P&L
             pnl = shocked_price - base_price
 
-            results.append({
-                'spot_shock': spot_shock,
-                'vol_shock': vol_shock,
-                'new_spot': portfolio.positions[0].option.spot + spot_shock,
-                'new_vol': portfolio.positions[0].option.volatility + vol_shock,
-                'price': shocked_price,
-                'pnl': pnl,
-            })
+            results.append(
+                {
+                    "spot_shock": spot_shock,
+                    "vol_shock": vol_shock,
+                    "new_spot": portfolio.positions[0].option.spot + spot_shock,
+                    "new_vol": portfolio.positions[0].option.volatility + vol_shock,
+                    "price": shocked_price,
+                    "pnl": pnl,
+                }
+            )
 
     return results
 
@@ -253,7 +265,9 @@ def create_synthetic_forward(
         exercise_style=ExerciseStyle.EUROPEAN,
     )
 
-    return Portfolio([
-        Position(call, 1),   # Long call
-        Position(put, -1),   # Short put
-    ])
+    return Portfolio(
+        [
+            Position(call, 1),  # Long call
+            Position(put, -1),  # Short put
+        ]
+    )

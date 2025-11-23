@@ -11,9 +11,9 @@ Tests include:
 import math
 import pytest
 
-from src.core.option_types import Option, OptionType, ExerciseStyle
-from src.models import black_scholes
-from src.models.monte_carlo import price_monte_carlo
+from options_pricing_engine.core.option_types import Option, OptionType, ExerciseStyle
+from options_pricing_engine.models import black_scholes
+from options_pricing_engine.models.monte_carlo import price_monte_carlo
 
 
 class TestMonteCarloConvergence:

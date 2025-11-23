@@ -10,8 +10,8 @@ Tests include:
 import math
 import pytest
 
-from src.core.option_types import Option, OptionType, ExerciseStyle
-from src.models.digital import (
+from options_pricing_engine.core.option_types import Option, OptionType, ExerciseStyle
+from options_pricing_engine.models.digital import (
     price_digital_black_scholes,
     price_digital_monte_carlo,
 )

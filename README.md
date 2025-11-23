@@ -24,6 +24,8 @@ Monte Carlo pricing simulates thousands of possible asset price paths under geom
 
 ## Installation
 
+### From Source (Development)
+
 1. Clone the repository:
 ```bash
 git clone https://github.com/dzerihun/options-pricing-engine.git
@@ -36,21 +38,31 @@ python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-3. Install dependencies:
+3. Install in editable mode with dev dependencies:
 ```bash
-pip install -r requirements.txt
+pip install -e ".[dev]"
 ```
 
 4. Run tests to verify installation:
 ```bash
-python -m pytest tests/ -v
+pytest tests/ -v
+```
+
+### Optional Dependencies
+
+```bash
+# For Jupyter notebooks with visualizations
+pip install -e ".[notebooks]"
+
+# For all optional dependencies
+pip install -e ".[all]"
 ```
 
 ## Quick Start
 
 ```python
-from src.core.option_types import Option, OptionType, ExerciseStyle
-from src.models import price, delta, gamma, vega, price_binomial, price_monte_carlo
+from options_pricing_engine.core.option_types import Option, OptionType, ExerciseStyle
+from options_pricing_engine.models import price, delta, gamma, vega, price_binomial, price_monte_carlo
 
 # Create a European call option
 option = Option(
@@ -95,6 +107,40 @@ american_price = price_binomial(american_put, steps=200)
 print(f"American Put Price:  ${american_price:.2f}")  # $5.65
 ```
 
+## Command-Line Interface
+
+After installation, you can price options directly from the command line:
+
+```bash
+# Price an ATM call with Black-Scholes
+options-pricer --spot 100 --strike 100 --rate 0.05 --vol 0.2 --time 1.0 --type call
+
+# Price a put with binomial tree (200 steps)
+options-pricer --spot 100 --strike 95 --rate 0.05 --vol 0.25 --time 0.5 --type put --method binomial --steps 200
+
+# Price with Monte Carlo and display Greeks
+options-pricer --spot 100 --strike 105 --rate 0.05 --vol 0.3 --time 1.0 --type call --method mc --paths 100000 --greeks
+
+# American put option
+options-pricer --spot 100 --strike 100 --rate 0.05 --vol 0.2 --time 1.0 --type put --style american --method binomial
+```
+
+### CLI Options
+
+| Option | Description |
+|--------|-------------|
+| `--spot` | Current spot price (required) |
+| `--strike` | Strike price (required) |
+| `--rate` | Risk-free rate, e.g., 0.05 for 5% (required) |
+| `--vol` | Volatility, e.g., 0.2 for 20% (required) |
+| `--time` | Time to maturity in years (required) |
+| `--type` | Option type: `call` or `put` (required) |
+| `--style` | Exercise style: `european` or `american` (default: european) |
+| `--method` | Pricing method: `bs`, `binomial`, `mc` (default: bs) |
+| `--steps` | Binomial tree steps (default: 100) |
+| `--paths` | Monte Carlo paths (default: 100000) |
+| `--greeks` | Also display Greeks (Black-Scholes only) |
+
 ## API Reference
 
 ### Core Types
@@ -121,10 +167,43 @@ print(f"American Put Price:  ${american_price:.2f}")  # $5.65
 | `theta(option)` | Price sensitivity to time |
 | `rho(option)` | Price sensitivity to interest rate |
 
+## Additional Features
+
+### Implied Volatility
+
+```python
+from options_pricing_engine import implied_volatility
+
+# Back out IV from a market price
+iv = implied_volatility(option, market_price=10.50)
+print(f"Implied Vol: {iv:.2%}")  # 20.12%
+```
+
+### Digital Options
+
+```python
+from options_pricing_engine import price_digital_black_scholes, price_digital_monte_carlo
+
+# Cash-or-nothing digital call
+price = price_digital_black_scholes(option, payout=100)
+mc_price, se = price_digital_monte_carlo(option, payout=100, num_paths=100_000)
+```
+
+### Portfolio Risk Management
+
+```python
+from options_pricing_engine import Position, Portfolio, portfolio_greeks, scenario_pnl
+
+positions = [Position(call_option, 10), Position(put_option, -5)]
+portfolio = Portfolio(positions)
+
+greeks = portfolio_greeks(portfolio)
+scenarios = scenario_pnl(portfolio, spot_shocks=[-10, 0, 10], vol_shocks=[-0.05, 0, 0.05])
+```
+
 ## Future Work
 
-- **Implied volatility solver** - Newton-Raphson method to back out IV from market prices
-- **Exotic options** - Asian, barrier, and lookback options via Monte Carlo
+- **More exotic options** - Asian, barrier, and lookback options via Monte Carlo
 - **Stochastic volatility** - Heston model implementation
 - **Dividend handling** - Discrete and continuous dividend yields
 - **Greeks for all models** - Finite difference Greeks for binomial and Monte Carlo

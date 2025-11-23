@@ -6,11 +6,10 @@ using the Cox-Ross-Rubinstein (CRR) binomial tree model.
 """
 
 import math
-from typing import List
 
 import numpy as np
 
-from ..core.option_types import Option, OptionType, ExerciseStyle
+from ..core.option_types import ExerciseStyle, Option, OptionType
 
 
 def price_binomial(option: Option, steps: int = 100) -> float:
@@ -59,7 +58,7 @@ def price_binomial(option: Option, steps: int = 100) -> float:
     # Build asset prices at maturity (final nodes)
     # At step n, there are n+1 nodes
     # Asset price at node (n, j) is S * u^j * d^(n-j)
-    asset_prices = np.array([S * (u ** j) * (d ** (steps - j)) for j in range(steps + 1)])
+    asset_prices = np.array([S * (u**j) * (d ** (steps - j)) for j in range(steps + 1)])
 
     # Compute option values at maturity
     if is_call:
@@ -70,10 +69,12 @@ def price_binomial(option: Option, steps: int = 100) -> float:
     # Backward induction through the tree
     for i in range(steps - 1, -1, -1):
         # Asset prices at this time step
-        asset_prices_at_step = np.array([S * (u ** j) * (d ** (i - j)) for j in range(i + 1)])
+        asset_prices_at_step = np.array([S * (u**j) * (d ** (i - j)) for j in range(i + 1)])
 
         # Continuation value (discounted expected value under risk-neutral measure)
-        continuation_values = discount * (p * option_values[1:i + 2] + (1 - p) * option_values[0:i + 1])
+        continuation_values = discount * (
+            p * option_values[1 : i + 2] + (1 - p) * option_values[0 : i + 1]
+        )
 
         if is_american:
             # For American options, take max of intrinsic and continuation
@@ -90,7 +91,7 @@ def price_binomial(option: Option, steps: int = 100) -> float:
     return float(option_values[0])
 
 
-def _get_early_exercise_boundary(option: Option, steps: int = 100) -> List[float]:
+def _get_early_exercise_boundary(option: Option, steps: int = 100) -> list[float]:
     """
     Compute the early exercise boundary for an American option.
 
@@ -121,7 +122,7 @@ def _get_early_exercise_boundary(option: Option, steps: int = 100) -> List[float
     p = (math.exp(r * dt) - d) / (u - d)
 
     # Build the tree
-    asset_prices = np.array([S * (u ** j) * (d ** (steps - j)) for j in range(steps + 1)])
+    asset_prices = np.array([S * (u**j) * (d ** (steps - j)) for j in range(steps + 1)])
 
     if is_call:
         option_values = np.maximum(asset_prices - K, 0.0)
@@ -131,8 +132,10 @@ def _get_early_exercise_boundary(option: Option, steps: int = 100) -> List[float
     boundary = []
 
     for i in range(steps - 1, -1, -1):
-        asset_prices_at_step = np.array([S * (u ** j) * (d ** (i - j)) for j in range(i + 1)])
-        continuation_values = discount * (p * option_values[1:i + 2] + (1 - p) * option_values[0:i + 1])
+        asset_prices_at_step = np.array([S * (u**j) * (d ** (i - j)) for j in range(i + 1)])
+        continuation_values = discount * (
+            p * option_values[1 : i + 2] + (1 - p) * option_values[0 : i + 1]
+        )
 
         if is_call:
             intrinsic_values = np.maximum(asset_prices_at_step - K, 0.0)
@@ -151,7 +154,7 @@ def _get_early_exercise_boundary(option: Option, steps: int = 100) -> List[float
                 boundary_price = asset_prices_at_step[exercise_optimal].max()
             boundary.append(boundary_price)
         else:
-            boundary.append(float('nan'))
+            boundary.append(float("nan"))
 
         option_values = np.maximum(intrinsic_values, continuation_values)
 
