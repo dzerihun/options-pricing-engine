@@ -163,12 +163,24 @@ def generate_vol_smile_data(
 
     # Optionally add noise
     if apply_noise:
+        import math
+
         rng = np.random.default_rng(seed)
+        discount = math.exp(-rate * time_to_maturity)
         noisy_prices = []
-        for p in prices:
-            # Add relative noise, ensure price stays positive
+        for K, p in zip(strikes, prices):
+            # Calculate arbitrage bounds for call options
+            lower_bound = max(0.0, spot - K * discount)
+            upper_bound = spot
+
+            # Add relative noise
             noise = rng.normal(0, noise_std * p)
-            noisy_price = max(p + noise, 0.01)  # Ensure positive
+            noisy_price = p + noise
+
+            # Clamp to arbitrage bounds with small buffer to avoid edge cases
+            buffer = 0.01
+            noisy_price = max(lower_bound + buffer, min(upper_bound - buffer, noisy_price))
+
             noisy_prices.append(noisy_price)
         prices = noisy_prices
 
